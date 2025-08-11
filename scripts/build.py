@@ -53,7 +53,10 @@ def main():
         return False
     
     dist_path = project_root / "dist"
-    exe_path = dist_path / "aci-provisioning-tool.exe"
+    exe_path_windows = dist_path / "aci-provisioning-tool.exe"
+    exe_path_linux = dist_path / "aci-provisioning-tool"
+    
+    exe_path = exe_path_windows if exe_path_windows.exists() else exe_path_linux
     
     if exe_path.exists():
         size_mb = exe_path.stat().st_size / (1024 * 1024)
@@ -61,18 +64,31 @@ def main():
         print(f"Executable: {exe_path}")
         print(f"Size: {size_mb:.1f} MB")
         
-        batch_content = """@echo off
+        if exe_path.name.endswith('.exe'):
+            batch_content = """@echo off
 echo Starting ACI Provisioning Tool...
 echo Please wait while the application loads...
 echo.
 aci-provisioning-tool.exe
 pause
 """
-        batch_path = dist_path / "run-aci-tool.bat"
-        with open(batch_path, 'w') as f:
-            f.write(batch_content)
-        
-        print(f"Batch file created: {batch_path}")
+            batch_path = dist_path / "run-aci-tool.bat"
+            with open(batch_path, 'w') as f:
+                f.write(batch_content)
+            print(f"Batch file created: {batch_path}")
+        else:
+            shell_content = """#!/bin/bash
+echo "Starting ACI Provisioning Tool..."
+echo "Please wait while the application loads..."
+echo ""
+./aci-provisioning-tool
+read -p "Press Enter to continue..."
+"""
+            shell_path = dist_path / "run-aci-tool.sh"
+            with open(shell_path, 'w') as f:
+                f.write(shell_content)
+            shell_path.chmod(0o755)
+            print(f"Shell script created: {shell_path}")
         
         return True
     else:
