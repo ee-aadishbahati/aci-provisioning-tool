@@ -8,6 +8,7 @@ import os
 import threading
 import webbrowser
 import time
+import logging
 from pathlib import Path
 
 if getattr(sys, 'frozen', False):
@@ -38,27 +39,40 @@ def main():
     print("Starting ACI Provisioning Tool...")
     print("Server will start on http://localhost:8080")
     
+    if getattr(sys, 'frozen', False):
+        logging.disable(logging.CRITICAL)
+        # Redirect stdin/stdout/stderr to avoid isatty issues
+        sys.stdin = open(os.devnull, 'r')
+        sys.stdout = open(os.devnull, 'w')
+        sys.stderr = open(os.devnull, 'w')
+    
     browser_thread = threading.Thread(target=open_browser, daemon=True)
     browser_thread.start()
     
     try:
-        uvicorn.run(
+        # Use minimal uvicorn configuration for PyInstaller compatibility
+        config = uvicorn.Config(
             app,
-            host="127.0.0.1",  # Localhost only for security
+            host="127.0.0.1",
             port=8080,
-            log_level="error",  # Reduce logging to avoid stdin issues
+            log_level="critical",  # Minimal logging
             access_log=False,
-            use_colors=False,  # Disable colors for PyInstaller compatibility
-            log_config=None  # Disable default logging config that causes isatty issues
+            use_colors=False,
+            log_config=None,
+            loop="asyncio"  # Explicit loop for PyInstaller
         )
+        server = uvicorn.Server(config)
+        server.run()
     except KeyboardInterrupt:
-        print("\nShutting down ACI Provisioning Tool...")
-    except Exception as e:
-        print(f"Error starting server: {e}")
         if not getattr(sys, 'frozen', False):
+            print("\nShutting down ACI Provisioning Tool...")
+    except Exception as e:
+        if not getattr(sys, 'frozen', False):
+            print(f"Error starting server: {e}")
             input("Press Enter to exit...")
         else:
-            time.sleep(5)  # Give user time to read error message
+            # In PyInstaller mode, just exit silently to avoid stdin issues
+            time.sleep(2)
 
 if __name__ == "__main__":
     main()
