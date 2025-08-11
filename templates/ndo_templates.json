@@ -1,0 +1,56 @@
+{
+  "multi_site_basic": {
+    "name": "Multi-Site Basic Schema",
+    "description": "Basic multi-site schema for NDO deployment",
+    "schema": {
+      "name": "multi_site_schema",
+      "description": "Multi-site deployment schema",
+      "templates": [
+        {
+          "name": "common_template",
+          "description": "Common template for all sites",
+          "tenants": ["common", "production"],
+          "sites": ["north_dc", "south_dc", "tertiary_dc"]
+        }
+      ]
+    }
+  },
+  "essential_energy_multisite": {
+    "name": "Essential Energy Multi-Site",
+    "description": "Multi-site schema for Essential Energy data centers",
+    "schema": {
+      "name": "essential_energy_schema",
+      "description": "Essential Energy multi-site deployment schema",
+      "templates": [
+        {
+          "name": "it_template",
+          "description": "IT environment template",
+          "tenants": ["common", "corp", "infra"],
+          "sites": ["AUNTH", "AUSTH", "AUTER"]
+        },
+        {
+          "name": "ot_template", 
+          "description": "OT environment template",
+          "tenants": ["common", "scada", "control"],
+          "sites": ["AUNTH", "AUSTH", "AUTER"]
+        }
+      ]
+    }
+  },
+  "disaster_recovery": {
+    "name": "Disaster Recovery Schema",
+    "description": "DR configuration for multi-site failover",
+    "schema": {
+      "name": "dr_schema",
+      "description": "Disaster recovery schema with site failover",
+      "templates": [
+        {
+          "name": "dr_template",
+          "description": "Disaster recovery template",
+          "tenants": ["common", "production", "dr"],
+          "sites": ["primary_site", "dr_site"]
+        }
+      ]
+    }
+  }
+}

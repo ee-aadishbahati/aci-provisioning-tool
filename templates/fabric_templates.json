@@ -1,0 +1,135 @@
+{
+  "basic_fabric": {
+    "name": "Basic ACI Fabric",
+    "description": "Standard ACI fabric configuration with common tenants and policies",
+    "tenants": [
+      {
+        "name": "common",
+        "description": "Common tenant for shared resources"
+      },
+      {
+        "name": "mgmt",
+        "description": "Management tenant"
+      },
+      {
+        "name": "production",
+        "description": "Production workloads tenant"
+      }
+    ],
+    "vrfs": [
+      {
+        "name": "prod_vrf",
+        "tenant": "production",
+        "description": "Production VRF",
+        "enforcement": "enforced"
+      },
+      {
+        "name": "mgmt_vrf",
+        "tenant": "mgmt",
+        "description": "Management VRF",
+        "enforcement": "enforced"
+      }
+    ],
+    "bridge_domains": [
+      {
+        "name": "web_bd",
+        "tenant": "production",
+        "vrf": "prod_vrf",
+        "subnet": "10.1.1.1/24",
+        "description": "Web tier bridge domain"
+      },
+      {
+        "name": "app_bd",
+        "tenant": "production",
+        "vrf": "prod_vrf",
+        "subnet": "10.1.2.1/24",
+        "description": "Application tier bridge domain"
+      },
+      {
+        "name": "db_bd",
+        "tenant": "production",
+        "vrf": "prod_vrf",
+        "subnet": "10.1.3.1/24",
+        "description": "Database tier bridge domain"
+      }
+    ],
+    "app_profiles": [
+      {
+        "name": "three_tier_app",
+        "tenant": "production",
+        "description": "Three-tier application profile"
+      }
+    ],
+    "epgs": [
+      {
+        "name": "web_epg",
+        "tenant": "production",
+        "app_profile": "three_tier_app",
+        "bridge_domain": "web_bd",
+        "description": "Web servers EPG"
+      },
+      {
+        "name": "app_epg",
+        "tenant": "production",
+        "app_profile": "three_tier_app",
+        "bridge_domain": "app_bd",
+        "description": "Application servers EPG"
+      },
+      {
+        "name": "db_epg",
+        "tenant": "production",
+        "app_profile": "three_tier_app",
+        "bridge_domain": "db_bd",
+        "description": "Database servers EPG"
+      }
+    ]
+  },
+  "essential_energy_it": {
+    "name": "Essential Energy IT Fabric",
+    "description": "IT fabric configuration for Essential Energy data centers",
+    "tenants": [
+      {
+        "name": "common",
+        "description": "Common tenant"
+      },
+      {
+        "name": "corp",
+        "description": "Corporate applications tenant"
+      },
+      {
+        "name": "infra",
+        "description": "Infrastructure services tenant"
+      }
+    ],
+    "vrfs": [
+      {
+        "name": "corp_vrf",
+        "tenant": "corp",
+        "description": "Corporate VRF",
+        "enforcement": "enforced"
+      },
+      {
+        "name": "infra_vrf",
+        "tenant": "infra",
+        "description": "Infrastructure VRF",
+        "enforcement": "enforced"
+      }
+    ],
+    "bridge_domains": [
+      {
+        "name": "corp_servers_bd",
+        "tenant": "corp",
+        "vrf": "corp_vrf",
+        "subnet": "10.10.1.1/24",
+        "description": "Corporate servers"
+      },
+      {
+        "name": "infra_services_bd",
+        "tenant": "infra",
+        "vrf": "infra_vrf",
+        "subnet": "10.10.100.1/24",
+        "description": "Infrastructure services"
+      }
+    ]
+  }
+}
