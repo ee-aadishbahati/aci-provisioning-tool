@@ -1,29 +1,28 @@
 # Core Framework
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-pydantic==2.5.0
-pydantic-settings==2.1.0
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
 
 # HTTP Client & SSL
-requests==2.31.0
-urllib3==2.1.0
-certifi==2023.11.17
-
+requests
+urllib3
+certifi
 
 # Authentication & Security
-python-jose[cryptography]==3.3.0
-passlib[bcrypt]==1.7.4
-python-multipart==0.0.6
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
 
 # Utilities
-python-dotenv==1.0.0
-jinja2==3.1.2
-aiofiles==23.2.1
+python-dotenv
+jinja2
+aiofiles
 
 # Packaging
-pyinstaller==6.2.0
+pyinstaller
 
 # Development
-pytest==7.4.3
-pytest-asyncio==0.21.1
-httpx==0.25.2
+pytest
+pytest-asyncio
+httpx

@@ -40,6 +40,8 @@ hiddenimports = [
     'uvicorn.loops.auto',
     'uvicorn.loops.asyncio',
     'uvicorn.logging',
+    'logging.config',
+    'logging.handlers',
     'fastapi.routing',
     'fastapi.encoders',
     'pydantic.json',
@@ -122,7 +124,7 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,  # No console window
+    console=True,  # Enable console for proper stdin/stdout handling
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,

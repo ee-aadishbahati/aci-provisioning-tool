@@ -46,14 +46,19 @@ def main():
             app,
             host="127.0.0.1",  # Localhost only for security
             port=8080,
-            log_level="info",
-            access_log=False
+            log_level="error",  # Reduce logging to avoid stdin issues
+            access_log=False,
+            use_colors=False,  # Disable colors for PyInstaller compatibility
+            log_config=None  # Disable default logging config that causes isatty issues
         )
     except KeyboardInterrupt:
         print("\nShutting down ACI Provisioning Tool...")
     except Exception as e:
         print(f"Error starting server: {e}")
-        input("Press Enter to exit...")
+        if not getattr(sys, 'frozen', False):
+            input("Press Enter to exit...")
+        else:
+            time.sleep(5)  # Give user time to read error message
 
 if __name__ == "__main__":
     main()
