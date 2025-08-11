@@ -42,6 +42,8 @@ hiddenimports = [
     'uvicorn.logging',
     'logging.config',
     'logging.handlers',
+    'logging.formatters',
+    'logging.filters',
     'fastapi.routing',
     'fastapi.encoders',
     'pydantic.json',

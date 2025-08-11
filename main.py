@@ -12,6 +12,13 @@ import logging
 from pathlib import Path
 
 if getattr(sys, 'frozen', False):
+    logging.disable(logging.CRITICAL)
+    # Redirect stdin/stdout/stderr to avoid isatty issues
+    sys.stdin = open(os.devnull, 'r')
+    sys.stdout = open(os.devnull, 'w') 
+    sys.stderr = open(os.devnull, 'w')
+
+if getattr(sys, 'frozen', False):
     application_path = sys._MEIPASS
 else:
     application_path = os.path.dirname(os.path.abspath(__file__))
@@ -39,13 +46,6 @@ def main():
     print("Starting ACI Provisioning Tool...")
     print("Server will start on http://localhost:8080")
     
-    if getattr(sys, 'frozen', False):
-        logging.disable(logging.CRITICAL)
-        # Redirect stdin/stdout/stderr to avoid isatty issues
-        sys.stdin = open(os.devnull, 'r')
-        sys.stdout = open(os.devnull, 'w')
-        sys.stderr = open(os.devnull, 'w')
-    
     browser_thread = threading.Thread(target=open_browser, daemon=True)
     browser_thread.start()
     
@@ -55,11 +55,12 @@ def main():
             app,
             host="127.0.0.1",
             port=8080,
-            log_level="critical",  # Minimal logging
+            log_level="critical",
             access_log=False,
             use_colors=False,
             log_config=None,
-            loop="asyncio"  # Explicit loop for PyInstaller
+            loop="asyncio",
+            lifespan="off"  # Disable lifespan events that might use logging
         )
         server = uvicorn.Server(config)
         server.run()
