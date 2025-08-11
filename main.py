@@ -8,7 +8,15 @@ import os
 import threading
 import webbrowser
 import time
+import logging
 from pathlib import Path
+
+if getattr(sys, 'frozen', False):
+    logging.disable(logging.CRITICAL)
+    # Redirect stdin/stdout/stderr to avoid isatty issues
+    sys.stdin = open(os.devnull, 'r')
+    sys.stdout = open(os.devnull, 'w') 
+    sys.stderr = open(os.devnull, 'w')
 
 if getattr(sys, 'frozen', False):
     application_path = sys._MEIPASS
@@ -42,18 +50,30 @@ def main():
     browser_thread.start()
     
     try:
-        uvicorn.run(
+        # Use minimal uvicorn configuration for PyInstaller compatibility
+        config = uvicorn.Config(
             app,
-            host="127.0.0.1",  # Localhost only for security
+            host="127.0.0.1",
             port=8080,
-            log_level="info",
-            access_log=False
+            log_level="critical",
+            access_log=False,
+            use_colors=False,
+            log_config=None,
+            loop="asyncio",
+            lifespan="off"  # Disable lifespan events that might use logging
         )
+        server = uvicorn.Server(config)
+        server.run()
     except KeyboardInterrupt:
-        print("\nShutting down ACI Provisioning Tool...")
+        if not getattr(sys, 'frozen', False):
+            print("\nShutting down ACI Provisioning Tool...")
     except Exception as e:
-        print(f"Error starting server: {e}")
-        input("Press Enter to exit...")
+        if not getattr(sys, 'frozen', False):
+            print(f"Error starting server: {e}")
+            input("Press Enter to exit...")
+        else:
+            # In PyInstaller mode, just exit silently to avoid stdin issues
+            time.sleep(2)
 
 if __name__ == "__main__":
     main()
