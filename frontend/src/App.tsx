@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import Header from './components/Header'
 import Sidebar from './components/Sidebar'
@@ -7,7 +7,7 @@ import ConfigurationForm from './components/ConfigurationForm'
 import JobsList from './components/JobsList'
 import JobDetails from './components/JobDetails'
 import Templates from './components/Templates'
-import { Toaster } from './components/Toaster'
+import Toaster from './components/Toaster'
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
