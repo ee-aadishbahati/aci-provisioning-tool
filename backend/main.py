@@ -40,6 +40,9 @@ def get_static_path():
 static_path = get_static_path()
 if os.path.exists(static_path):
     app.mount("/static", StaticFiles(directory=static_path), name="static")
+    assets_path = os.path.join(static_path, 'assets')
+    if os.path.exists(assets_path):
+        app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
 
 @app.get("/")
 async def read_root():
@@ -51,6 +54,16 @@ async def read_root():
         return FileResponse(index_path)
     else:
         return {"message": "ACI Provisioning Tool API", "status": "running"}
+
+@app.get("/vite.svg")
+async def serve_vite_svg():
+    """Serve the Vite SVG favicon"""
+    static_path = get_static_path()
+    vite_svg_path = os.path.join(static_path, 'vite.svg')
+    if os.path.exists(vite_svg_path):
+        return FileResponse(vite_svg_path, media_type="image/svg+xml")
+    else:
+        raise HTTPException(status_code=404, detail="Favicon not found")
 
 @app.get("/health")
 async def health_check():
